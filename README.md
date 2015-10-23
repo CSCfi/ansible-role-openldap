@@ -10,9 +10,12 @@ Requirements
 Role Variables
 --------------
 
+See the defaults/main.yml , do change passwords!
 
 Dependencies
 ------------
+
+EL7
 
 
 Example Playbook
