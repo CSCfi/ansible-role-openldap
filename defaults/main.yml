@@ -78,7 +78,7 @@ openldap_default_sentinel_file: /etc/ldap/noslapd
 openldap_server_pidfile: /var/run/slapd/slapd.pid
 openldap_server_argsfile: /var/run/slapd/slapd.args
 openldap_server_modulepath: /usr/lib/ldap
-openldap_server_directory: /usr/share/openldap-server
+openldap_server_directory: /usr/share/openldap-servers
 openldap_server_configuration: /etc/openldap/slapd.conf
 openldap_server_app_path: /etc/openldap
 openldap_client_configuration: /etc/openldap/ldap.conf
