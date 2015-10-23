@@ -1,0 +1,19 @@
+dn: {{ openldap_server_suffix }}
+objectClass: top
+objectClass: dcObject
+objectclass: organization
+o: {{ openldap_domain }}
+dc: {{ openldap_organization }}
+
+dn: {{ openldap_server_rootdn }}
+objectClass: organizationalRole
+cn: Manager
+description: Directory Manager
+
+dn: ou=People,{{ openldap_server_suffix }}
+objectClass: organizationalUnit
+ou: People
+
+dn: ou=Group,{{ openldap_server_suffix }}
+objectClass: organizationalUnit
+ou: Group

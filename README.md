@@ -39,3 +39,4 @@ An optional section for the role authors to include contact information, or a we
 
 Inspiration from:
  - https://github.com/kbrebanov/ansible-openldap
+ - http://www.server-world.info/en/note?os=CentOS_7&p=openldap

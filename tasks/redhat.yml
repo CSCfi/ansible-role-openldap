@@ -25,7 +25,7 @@
 
 - name: Hash OpenLDAP rootpw
   command: slappasswd -h {{ openldap_server_password_hash }} -s {{ openldap_server_rootpw }}
-  register: rootpw
+  register: ldapregrootpw
 
 #- name: Create OpenLDAP server configuration
 #  template: >
@@ -97,3 +97,29 @@
   assert: 
     that:
       - item.rc == 80 or item.rc == 0
+
+- name: Template in chdomain.ldif
+  template: >
+    src=chdomain.ldif
+    dest=/tmp/chdomain.ldif
+    owner=root
+    group=root
+    mode=0600
+
+- name: Change Domain
+  command: ldapmodify -Y EXTERNAL -H ldapi:/// -f /tmp/chdomain.ldif 
+  register: ldapchangedomain
+
+# Remove chdomain?
+
+- name: Template in basedomain.ldif
+  template: >
+    src=basedomain.ldif
+    dest=/tmp/basedomain.ldif
+    owner=root
+    group=root
+    mode=0600
+
+- name: Setup Base Domain
+  command: ldapadd -x -D {{ openldap_server_rootdn }} -w {{ ldapregrootpw }} -f /tmp/basedomain.ldif 
+  register: ldapbasedomain

@@ -71,8 +71,8 @@ openldap_packages:
 #
 openldap_defaults_file: /etc/sysconfig/slapd
 
-openldap_default_user: openldap
-openldap_default_group: openldap
+openldap_default_user: ldap
+openldap_default_group: ldap
 openldap_default_sentinel_file: /etc/ldap/noslapd
 
 openldap_server_pidfile: /var/run/slapd/slapd.pid

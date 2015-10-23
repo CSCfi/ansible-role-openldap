@@ -2,4 +2,4 @@
 dn: olcDatabase={0}config,cn=config
 changetype: modify
 add: olcRootPW
-olcRootPW: {{rootpw.stdout}}
+olcRootPW: {{ ldapregrootpw.stdout }}
