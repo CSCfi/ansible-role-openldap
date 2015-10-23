@@ -71,7 +71,8 @@
   register: addldapadmin
 
 - name: Remove chroot.ldif if addldapadmin was successful
-  file: /tmp/chrootpw.ldif state=absent
+  file: path=/tmp/chrootpw.ldif state=absent
+  when: addldapadmin.changed
 
 - name: Add basic schemas
   command:  ldapadd -Y EXTERNAL -H ldapi:/// -f {{ openldap_server_app_path }}/schema/{{ item }}.ldif 
