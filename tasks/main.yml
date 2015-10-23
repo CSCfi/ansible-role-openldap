@@ -1,2 +1,6 @@
 ---
 # tasks file for ansible-role-openldap
+
+- include: redhat.yml
+  when: ansible_os_family == "RedHat"
+  tags: openldap

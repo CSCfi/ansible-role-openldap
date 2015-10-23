@@ -1,0 +1,78 @@
+---
+# tasks file for ansible-role-openldap
+
+- name: Install OpenLDAP packages
+  yum: name={{ item }} state=present
+  with_items: openldap_packages
+
+- name: Create OpenLDAP defaults configuration
+  template: >
+    src=slapd_sysconfig.j2
+    dest={{ openldap_defaults_file }}
+    owner=root
+    group=root
+    mode=0644
+  notify: restart slapd
+
+#- name: Copy Samba LDAP schema
+#  copy: >
+#    src=samba.schema
+#    dest={{ openldap_schema_directory }}
+#    owner=root
+#    group=root
+#    mode=0644
+#  tags: openldap
+
+- name: Hash OpenLDAP rootpw
+  command: slappasswd -h {{ openldap_server_password_hash }} -s {{ openldap_server_rootpw }}
+  register: rootpw
+
+#- name: Create OpenLDAP server configuration
+#  template: >
+#    src=slapd.conf.j2
+#    dest={{ openldap_server_configuration }}
+#    owner=root
+#    group=root
+#    mode=0644
+#  notify: restart slapd
+
+- name: Create OpenLDAP DB_CONFIG
+  template: >
+    src=DB_CONFIG.j2
+    dest={{ openldap_server_directory }}/DB_CONFIG
+    owner=ldap
+    group=ldap
+    mode=0600
+  notify: restart slapd
+
+#- name: Create OpenLDAP client configuration
+#  template: >
+#    src=ldap.conf.j2
+#    dest={{ openldap_client_configuration }}
+#    owner=root
+#    group=root
+#    mode=0644
+
+- name: Ensure OpenLDAP service is started and enabled on boot
+  service: name=slapd state=started enabled=yes
+
+# TODO: check if ldapadmin exists
+
+- name: Template in chroot.ldif
+  template: >
+    src=chrootpw.ldif
+    dest=/tmp/chrootpw.ldif
+    owner=root
+    group=root
+    mode=0600
+
+- name: Add admin user
+  command: ldapadd -Y EXTERNAL -H ldapi:/// -f /tmp/chrootpw.ldif 
+  register: addldapadmin
+
+- name: Remove chroot.ldif if addldapadmin was successful
+  file: /tmp/chrootpw.ldif state=absent
+
+- name: Add basic schemas
+  command:  ldapadd -Y EXTERNAL -H ldapi:/// -f {{ openldap_server_app_path }}/schema/{{ item }}.ldif 
+  with_items: openldap_server_schemas
