@@ -69,11 +69,31 @@
 - name: Add admin user
   command: ldapadd -Y EXTERNAL -H ldapi:/// -f /tmp/chrootpw.ldif 
   register: addldapadmin
+  ignore_errors: True
+
+#- name: print addldapadmin
+#  debug: var=addldapadmin
+
+- name: Check addldapadmin status
+  assert: 
+    that:
+      - addldapadmin.rc == 18 or addldapadmin.rc == 0
 
 - name: Remove chroot.ldif if addldapadmin was successful
   file: path=/tmp/chrootpw.ldif state=absent
-  when: addldapadmin.changed
+  when: addldapadmin.rc == 18 or addldapadmin.rc == 0
 
 - name: Add basic schemas
   command:  ldapadd -Y EXTERNAL -H ldapi:/// -f {{ openldap_server_app_path }}/schema/{{ item }}.ldif 
+  register: addldapschemas
   with_items: openldap_server_schemas
+  ignore_errors: True
+
+#- name: print addldapschemas
+#  debug: var=addldapschemas.results
+
+- name: Check addldapschemas status
+  with_items: addldapschemas.results
+  assert: 
+    that:
+      - item.rc == 80 or item.rc == 0
