@@ -71,9 +71,7 @@
   register: addldapadmin
   ignore_errors: True
 
-#- name: print addldapadmin
-#  debug: var=addldapadmin
-
+# 18: no equality matching rule
 - name: Assert addldapadmin status
   assert: 
     that:
@@ -89,9 +87,7 @@
   with_items: openldap_server_schemas
   ignore_errors: True
 
-#- name: print addldapschemas
-#  debug: var=addldapschemas.results
-
+# 80: Duplicate attributeType:
 - name: Assert addldapschemas status
   with_items: addldapschemas.results
   assert: 
@@ -129,3 +125,14 @@
 - name: Setup Base Domain
   command: ldapadd -x -D {{ openldap_server_rootdn }} -w "{{ openldap_admin_password }}" -f /tmp/basedomain.ldif 
   register: ldapbasedomain
+  ignore_errors: True
+
+
+# 68: Already exists (68)
+- name: Assert ldapchangedomain status
+  assert: 
+    that:
+      - ldapbasedomain.rc == 68 or ldapbasedomain.rc == 0
+
+- name: run an ldapquery at the end to make sure it responds
+  command: ldapsearch -x -H ldap://localhost -b {{ openldap_server_suffix }}

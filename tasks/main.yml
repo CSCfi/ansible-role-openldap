@@ -1,6 +1,11 @@
 ---
 # tasks file for ansible-role-openldap
 
+- name: if this ldap query has return code 0, skip some ldap tasks
+  command: ldapsearch -x -H ldap://localhost -b {{ openldap_server_suffix }}
+  register: initial_ldapquery
+
+# The initial_ldapquery.rc conditional could be set to != 0 in case we do not want to run anything if the query above works
 - include: redhat.yml
-  when: ansible_os_family == "RedHat"
+  when: ansible_os_family == "RedHat" and initial_ldapquery.rc == 0
   tags: openldap
