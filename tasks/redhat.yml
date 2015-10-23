@@ -74,7 +74,7 @@
 #- name: print addldapadmin
 #  debug: var=addldapadmin
 
-- name: Check addldapadmin status
+- name: Assert addldapadmin status
   assert: 
     that:
       - addldapadmin.rc == 18 or addldapadmin.rc == 0
@@ -92,7 +92,7 @@
 #- name: print addldapschemas
 #  debug: var=addldapschemas.results
 
-- name: Check addldapschemas status
+- name: Assert addldapschemas status
   with_items: addldapschemas.results
   assert: 
     that:
@@ -109,6 +109,12 @@
 - name: Change Domain
   command: ldapmodify -Y EXTERNAL -H ldapi:/// -f /tmp/chdomain.ldif 
   register: ldapchangedomain
+  ignore_errors: True
+
+- name: Assert ldapchangedomain status
+  assert: 
+    that:
+      - ldapchangedomain.rc == 18 or ldapchangedomain.rc == 0
 
 # Remove chdomain?
 
@@ -121,5 +127,5 @@
     mode=0600
 
 - name: Setup Base Domain
-  command: ldapadd -x -D {{ openldap_server_rootdn }} -w {{ ldapregrootpw }} -f /tmp/basedomain.ldif 
+  command: ldapadd -x -D {{ openldap_server_rootdn }} -w "{{ openldap_admin_password }}" -f /tmp/basedomain.ldif 
   register: ldapbasedomain
