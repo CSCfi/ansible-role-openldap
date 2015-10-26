@@ -6,7 +6,7 @@ openldap_domain: example.com
 openldap_organization: example
 openldap_admin_password: password
 
-openldap_default_services: ldap:/// ldapi:///
+openldap_default_services: ldap://127.0.0.1/ ldapi:/// ldaps:///
 openldap_default_options: ""
 
 openldap_server_schemas:
@@ -84,3 +84,7 @@ openldap_server_app_path: /etc/openldap
 openldap_client_configuration: /etc/openldap/ldap.conf
 
 openldap_schema_directory: /etc/ldap/schema
+
+openldap_server_tls: True
+openldap_server_tls_crt: "/etc/pki/tls/certs/hostcert.crt"
+openldap_server_tls_key: "/etc/pki/tls/private/hostcert.key"

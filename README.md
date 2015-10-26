@@ -6,9 +6,13 @@ Configure an openldap server
 Requirements
 ------------
 
+certificates are required if openldap_server_tls: True
+
 
 Role Variables
 --------------
+
+openldap_server_tls: True
 
 See the defaults/main.yml , do change passwords!
 

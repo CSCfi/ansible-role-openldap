@@ -10,7 +10,7 @@
 {% if openldap_default_services %}
 SLAPD_URLS="{{ openldap_default_services }}"
 {% else %}
-SLAPD_URLS="ldapi:/// ldap:///"
+SLAPD_URLS="ldapi:/// ldap:/// ldaps:///"
 {% endif %}
 
 # Any custom options
