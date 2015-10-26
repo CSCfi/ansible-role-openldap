@@ -1,10 +1,6 @@
 ---
 # tasks file for ansible-role-openldap
 
-- name: Install OpenLDAP packages
-  yum: name={{ item }} state=present
-  with_items: openldap_packages
-
 - name: Create OpenLDAP defaults configuration
   template: >
     src=slapd_sysconfig.j2
