@@ -1,7 +1,7 @@
 ansible-role-openldap
 =========
 
-Configure an openldap server
+Configure an openldap server.
 
 Requirements
 ------------
