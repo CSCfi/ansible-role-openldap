@@ -75,15 +75,15 @@ openldap_default_user: ldap
 openldap_default_group: ldap
 openldap_default_sentinel_file: /etc/ldap/noslapd
 
-openldap_server_pidfile: /var/run/slapd/slapd.pid
-openldap_server_argsfile: /var/run/slapd/slapd.args
-openldap_server_modulepath: /usr/lib/ldap
+openldap_server_pidfile: /var/run/openldap/slapd.pid
+openldap_server_argsfile: /var/run/openldap/slapd.args
+openldap_server_modulepath: /var/lib/ldap
 openldap_server_directory: /usr/share/openldap-servers
 openldap_server_configuration: /etc/openldap/slapd.conf
 openldap_server_app_path: /etc/openldap
 openldap_client_configuration: /etc/openldap/ldap.conf
 
-openldap_schema_directory: /etc/ldap/schema
+openldap_schema_directory: /etc/openldap/schema
 
 openldap_server_tls: True
 openldap_server_tls_crt: "/etc/pki/tls/certs/hostcert.crt"

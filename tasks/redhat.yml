@@ -65,7 +65,12 @@
 - name: Add admin user
   command: ldapadd -Y EXTERNAL -H ldapi:/// -f /tmp/chrootpw.ldif 
   register: addldapadmin
-  ignore_errors: True
+  # ignore_errors: True
+  failed_when:
+    - addldapadmin.rc != 68
+    - addldapadmin.rc != 0
+  changed_when:
+    - addldapadmin.rc == 0
 
 # 18: no equality matching rule
 - name: Assert addldapadmin status
@@ -80,12 +85,15 @@
 - name: Add basic schemas
   command:  ldapadd -Y EXTERNAL -H ldapi:/// -f {{ openldap_server_app_path }}/schema/{{ item }}.ldif 
   register: addldapschemas
-  with_items: openldap_server_schemas
-  ignore_errors: True
+  with_items: "{{ openldap_server_schemas }}"
+  # ignore_errors: True
+  failed_when:
+    - addldapschemas.rc != 80
+    - addldapschemas.rc != 0
 
 # 80: Duplicate attributeType:
 - name: Assert addldapschemas status
-  with_items: addldapschemas.results
+  with_items: "{{ addldapschemas.results }}"
   assert: 
     that:
       - item.rc == 80 or item.rc == 0
@@ -101,12 +109,18 @@
 - name: Change Domain
   command: ldapmodify -Y EXTERNAL -H ldapi:/// -f /tmp/chdomain.ldif 
   register: ldapchangedomain
-  ignore_errors: True
+  # ignore_errors: True
+  failed_when:
+    - ldapchangedomain.rc != 0
+    - ldapchangedomain.rc != 18
+    - ldapchangedomain.rc != 20
+  changed_when:
+    - ldapchangedomain.rc == 0
 
 - name: Assert ldapchangedomain status
   assert: 
     that:
-      - ldapchangedomain.rc == 18 or ldapchangedomain.rc == 0
+      - ldapchangedomain.rc == 18 or ldapchangedomain.rc == 0 or ldapchangedomain.rc == 20
 
 # Remove chdomain?
 
@@ -119,10 +133,14 @@
     mode=0600
 
 - name: Setup Base Domain
-  command: ldapadd -x -D {{ openldap_server_rootdn }} -w "{{ openldap_admin_password }}" -f /tmp/basedomain.ldif 
+  command: ldapadd -x -D {{ openldap_server_rootdn }} -w {{ openldap_admin_password }} -f /tmp/basedomain.ldif 
   register: ldapbasedomain
-  ignore_errors: True
-
+  # ignore_errors: True
+  failed_when:
+  - ldapbasedomain.rc != 0
+  - ldapbasedomain.rc != 68
+  changed_when:
+  - ldapbasedomain.rc == 0
 
 # 68: Already exists (68)
 - name: Assert ldapchangedomain status
@@ -132,3 +150,7 @@
 
 - name: run an ldapquery at the end to make sure it responds
   command: ldapsearch -x -H ldap://localhost -b {{ openldap_server_suffix }}
+  register: ldaprespondtest
+  failed_when:
+    - ldaprespondtest.rc != 0
+    - ldaprespondtest.rc != 4

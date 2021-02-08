@@ -2,15 +2,24 @@
 # tasks file for ansible-role-openldap
 #
 
+#- name: Install OpenLDAP packages on RedHat
+#  yum: name={{ item }} state=present
+#  with_items: openldap_packages 
+#  when: ansible_os_family == "RedHat"
+
 - name: Install OpenLDAP packages on RedHat
-  yum: name={{ item }} state=present
-  with_items: openldap_packages 
+  yum:
+    name: "{{ openldap_packages }}"
+    state: present
   when: ansible_os_family == "RedHat"
 
 - name: if this ldap query has return code 0, skip some ldap tasks
   command: ldapsearch -x -H ldap://localhost -b {{ openldap_server_suffix }}
   register: initial_ldapquery
-  ignore_errors: True
+  # ignore_errors: True
+  failed_when:
+    - initial_ldapquery.rc != 0
+    - initial_ldapquery.rc != 4
 
 # The initial_ldapquery.rc conditional could be set to != 0 in case we do not want to run anything if the query above works
 - include: redhat.yml
