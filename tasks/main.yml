@@ -20,6 +20,7 @@
   failed_when:
     - initial_ldapquery.rc != 0
     - initial_ldapquery.rc != 4
+    - initial_ldapquery.rc != 255
 
 # The initial_ldapquery.rc conditional could be set to != 0 in case we do not want to run anything if the query above works
 - include: redhat.yml
