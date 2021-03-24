@@ -1,0 +1,47 @@
+- name: OpenLDAP Certs | Vault certificates 
+  block:   
+    - name: OpenLDAP | Certificates | SSL | Insert | {{ openldap_server_crtdir }}
+      copy:
+        content: "{{ openldap_server_tls_key }}"
+        dest: "{{ openldap_server_crtdir }}/{{ openldap_server_fqdn }}.key.pem"
+        group: ldap
+        owner: root
+        mode: 0440
+
+    - copy:
+        content: "{{ openldap_server_tls_crt }}"
+        dest: "{{ openldap_server_crtdir }}//{{ openldap_server_fqdn }}.pem"
+        group: ldap
+        owner: root
+        mode: 0444
+  
+    - copy:
+        content: "{{ openldap_server_tls_cabundle }}"
+        dest: "{{ openldap_server_crtdir }}/{{ openldap_server_fqdn }}.cabundle.pem"
+        group: ldap
+        owner: root
+        mode: 0444
+
+    - name: Template in certs.ldif
+      template: >
+        src=certs.ldif
+        dest=/tmp/certs.ldif
+        owner=root
+        group=root
+        mode=0600
+    
+    - name: OpenLDAP Certs | Certificate | Load certificates to config DB
+      command: ldapmodify -Y EXTERNAL -H ldapi:/// -f /tmp/certs.ldif 
+      register: ldapchangecerts
+      failed_when:
+        - ldapchangecerts.rc != 0
+        - ldapchangecerts.rc != 18
+        - ldapchangecerts.rc != 20
+      changed_when:
+        - ldapchangecerts.rc == 0
+        - ldapchangecerts.rc == 16 #Ignore if the key to delete is missing
+      notify: restart slapd
+
+  when: openldap_server_tls_key is search("BEGIN")
+
+
