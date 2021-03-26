@@ -1,0 +1,12 @@
+dn: cn=config
+changetype: modify
+replace: olcTLSCertificateFile
+olcTLSCertificateFile: {{ openldap_server_crtdir }}/{{ ansible_fqdn }}.pem
+-
+replace: olcTLSCertificateKeyFile
+olcTLSCertificateKeyFile: {{ openldap_server_crtdir }}/{{ ansible_fqdn }}.key.pem
+-
+replace: olcTLSCACertificateFile
+olcTLSCACertificateFile: {{ openldap_server_crtdir }}/{{ ansible_fqdn }}.cabundle.pem
+-
+delete: olcTLSCACertificatePath

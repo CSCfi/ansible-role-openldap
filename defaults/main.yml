@@ -85,6 +85,9 @@ openldap_client_configuration: /etc/openldap/ldap.conf
 
 openldap_schema_directory: /etc/openldap/schema
 
+openldap_server_fqdn: "{{ ansible_fqdn }}"
 openldap_server_tls: True
-openldap_server_tls_crt: "/etc/pki/tls/certs/hostcert.crt"
-openldap_server_tls_key: "/etc/pki/tls/private/hostcert.key"
+openldap_server_tls_crt: "{{ vault_ssl_crt }}"
+openldap_server_tls_key: "{{ vault_ssl_key }}"
+openldap_server_tls_cabundle: "{{ vault_ssl_cabundle }}"
+openldap_server_crtdir: /etc/openldap/certs
