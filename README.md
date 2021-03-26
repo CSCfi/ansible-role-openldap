@@ -25,11 +25,11 @@ EL7
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+Including an example of how to use your role. configurables parameter is optional. If you define it, will expect certificates to be found in ansible vault. If you omit it, OpenLDAP will used defatul installation selfsigned certificates
 
     - hosts: servers
       roles:
-         - { role: ansible-role-openldap }
+         - { role: ansible-role-openldapm, configurables: ['certs']}
 
 License
 -------
