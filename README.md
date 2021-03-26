@@ -29,7 +29,7 @@ Including an example of how to use your role. configurables parameter is optiona
 
     - hosts: servers
       roles:
-         - { role: ansible-role-openldapm, configurables: ['certs']}
+         - { role: ansible-role-openldapm, configurables: ['certs'] }
 
 License
 -------
