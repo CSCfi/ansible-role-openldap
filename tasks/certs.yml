@@ -35,11 +35,11 @@
       register: ldapchangecerts
       failed_when:
         - ldapchangecerts.rc != 0
+        - ldapchangecerts.rc != 16
         - ldapchangecerts.rc != 18
         - ldapchangecerts.rc != 20
       changed_when:
         - ldapchangecerts.rc == 0
-        - ldapchangecerts.rc == 16 #Ignore if the key to delete is missing
       notify: restart slapd
 
   when: openldap_server_tls_key is search("BEGIN")
